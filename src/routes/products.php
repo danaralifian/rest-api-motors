@@ -21,3 +21,23 @@ $app->get('/api/products', function(Request $request, Response $response){
         echo '{"Error": {"text": '.$e->getMessage().'}';
     }
 });
+
+// GET Single Product
+$app->get('/api/products/{id}', function(Request $request, Response $response){
+    $id = $request->getAttribute('id');
+
+    $sql = 'SELECT * FROM products WHERE productCode = "'.$id.'"';
+    try {
+        // GET DB Object
+        $db = new db();
+        // Connect
+        $db = $db->connect();
+
+        $stmt = $db->query($sql);
+        $products = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        echo json_encode($products);
+    } catch (PDOException $e) {
+        echo '{"Error": {"text": '.$e->getMessage().'}';
+    }
+});
